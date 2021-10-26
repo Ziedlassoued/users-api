@@ -3,7 +3,13 @@ import express from 'express';
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 const users = ['David', 'Anke', 'Alice', 'Zied'];
+
+app.post('/api/users', (request, response) => {
+  response.send(request.body.name);
+});
 
 app.delete('/api/users/:name', (request, response) => {
   const usersIndex = users.indexOf(request.params.name);
