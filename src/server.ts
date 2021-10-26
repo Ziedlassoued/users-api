@@ -5,6 +5,16 @@ const port = 3000;
 
 const users = ['David', 'Anke', 'Alice', 'Zied'];
 
+app.delete('/api/users/:name', (request, response) => {
+  const usersIndex = users.indexOf(request.params.name);
+  if (usersIndex === -1) {
+    response.status(404).send('User ist not available');
+    return;
+  }
+  users.splice(usersIndex, 1);
+  response.send('Deleted');
+});
+
 app.get('/api/users/:name', (request, response) => {
   const isNameknow = users.includes(request.params.name);
   if (isNameknow) {
