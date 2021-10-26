@@ -3,12 +3,18 @@ import express from 'express';
 const app = express();
 const port = 3000;
 
+const users = ['David', 'Anke', 'Alice', 'Zied'];
+
 app.get('/api/users/:name', (request, response) => {
-  response.send(request.params.name);
+  const isNameknow = users.includes(request.params.name);
+  if (isNameknow) {
+    response.send(request.params.name);
+  } else {
+    response.status(404).send('User ist not available');
+  }
 });
 
 app.get('/api/users', (_request, response) => {
-  const users = ['David', 'Anke', 'Alice', 'Zied'];
   response.send(users);
 });
 
