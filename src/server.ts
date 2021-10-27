@@ -1,9 +1,17 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 3000;
 
+app.use((request, _response, next) => {
+  console.log('Request received', request.url);
+  next();
+});
+
 app.use(express.json());
+
+app.use(cookieParser());
 
 const users = [
   {
@@ -28,14 +36,25 @@ const users = [
   },
 ];
 
+app.get('/api/me', (request, response) => {
+  const username = request.cookies.username;
+  const foundUser = users.find((user) => user.username === username);
+  if (foundUser) {
+    response.send(foundUser);
+  } else {
+    response.status(404).send('User not found');
+  }
+});
+
 app.post('/api/login/', (request, response) => {
-  const user = users.find(
+  const validUser = users.find(
     (user) =>
       user.username === request.body.username &&
       user.password === request.body.password
   );
-  if (user) {
-    response.send(`${user.username} login successful`);
+  if (validUser) {
+    response.setHeader('Set-Cookie', `username=${validUser.username}`);
+    response.send('login successful');
   } else {
     response.status(401).send('username or password is incorrect');
   }
