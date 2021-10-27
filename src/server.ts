@@ -8,7 +8,13 @@ app.use(express.json());
 const users = ['David', 'Anke', 'Alice', 'Zied'];
 
 app.post('/api/users', (request, response) => {
-  response.send(request.body.name);
+  const newUser = request.body;
+  const isNameknow = users.includes(newUser.name);
+
+  if (isNameknow) {
+    response.status(409).send('User is available');
+  } else users.unshift(newUser.name);
+  response.send(`${newUser.name} added`);
 });
 
 app.delete('/api/users/:name', (request, response) => {
